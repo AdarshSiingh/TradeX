@@ -1,7 +1,7 @@
 {
-  "name": "server",
+  "name": "tradex-server",
   "version": "1.0.0",
-  "description": "Stock Trading Platform - Backend",
+  "description": "TradeX - Real-time Stock Trading Platform",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",

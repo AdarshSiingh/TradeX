@@ -31,7 +31,7 @@ app.use('/api/', limiter);
 
 // ─── ROUTES ──────────────────────────────────────────────────
 app.get('/', (req, res) => {
-  res.json({ message: 'Stock Trading Platform API is running ✅' });
+  res.json({ message: 'TradeX API is running ✅' });
 });
 
 app.use('/api/auth', authRoutes);
