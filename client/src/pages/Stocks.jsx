@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Layout from '../components/Layout';
+import { useSocket } from '../context/SocketContext';
+const { prices } = useSocket();
 
 function Stocks() {
   const [stocks, setStocks] = useState([]);
@@ -50,7 +52,9 @@ function Stocks() {
                 <p className="text-sm font-medium">{stock.ticker}</p>
                 <p className="text-xs text-gray-400">{stock.name}</p>
               </div>
-              <p className="text-sm">${stock.current_price}</p>
+              <p className="text-sm">
+                ${prices[stock.ticker] || stock.current_price}
+              </p>
             </Link>
           ))}
         </div>

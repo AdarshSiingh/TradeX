@@ -10,10 +10,11 @@ const authRoutes = require('./routes/auth.routes');
 const stockRoutes = require('./routes/stock.routes');
 const orderRoutes = require('./routes/order.routes');
 const portfolioRoutes = require('./routes/portfolio.routes');
-
 const pool = require('./config/db');
 const { initializeDatabase } = require('./db/queries');
-
+const http = require('http');
+const { initSocket } = require('./sockets/priceSocket');
+const { connectToFinnhub, seedPricesFromDB } = require('./services/price.service');
 const app = express();
 
 app.use(helmet());
@@ -47,11 +48,16 @@ const errorHandler = require('./middleware/errorHandler');
 app.use(errorHandler);
 
 
+const server = http.createServer(app); 
+initSocket(server); 
+
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   await initializeDatabase();
+  await seedPricesFromDB();
+  connectToFinnhub();
 });
 
 module.exports = app;
