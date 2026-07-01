@@ -4,6 +4,9 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import Stocks from './pages/Stocks';
+import StockDetail from './pages/StockDetail';
+import Portfolio from './pages/Portfolio';
 
 function App() {
   return (
@@ -19,6 +22,30 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+          path="/stocks"
+          element={
+            <ProtectedRoute>
+              <Stocks />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/stocks/:ticker"
+          element={
+            <ProtectedRoute>
+              <StockDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/portfolio"
+          element={
+            <ProtectedRoute>
+              <Portfolio />
+            </ProtectedRoute>
+          }
+        />
     </Routes>
   );
 }

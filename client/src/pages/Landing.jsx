@@ -4,7 +4,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-black text-white">
 
-      // top navigation bar
+     
       <div className="flex justify-between items-center px-8 py-6">
         <h1 className="text-lg font-semibold">
           Trade<span className="text-green-500">X</span>
@@ -15,7 +15,7 @@ function Landing() {
         </div>
       </div>
 
-      // main hero section
+    
       <div className="flex flex-col items-center text-center px-4 pt-16 pb-12">
 
 
@@ -57,11 +57,11 @@ function Landing() {
 
       </div>
 
-      // horizontal divider
+     
       <div className="border-t border-[#1a1a1a] max-w-4xl mx-auto" />
 
      
-      //cards
+     
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 px-8 py-12">
 
         <div className="border border-[#1a1a1a] rounded-lg p-5">
