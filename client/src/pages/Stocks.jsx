@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import Layout from '../components/Layout';
 import { useSocket } from '../context/SocketContext';
-const { prices } = useSocket();
 
 function Stocks() {
+  const { prices } = useSocket();   // ✅ now inside the component
   const [stocks, setStocks] = useState([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,6 @@ function Stocks() {
         placeholder="Search stocks..."
         className="w-full max-w-sm bg-[#1a1a1a] border border-[#2a2a2a] rounded px-3 py-2 text-sm mb-6 focus:outline-none focus:border-gray-500"
       />
-
       {loading ? (
         <p className="text-gray-400 text-sm">Loading...</p>
       ) : (
