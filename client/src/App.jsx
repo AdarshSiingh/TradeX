@@ -7,6 +7,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Stocks from './pages/Stocks';
 import StockDetail from './pages/StockDetail';
 import Portfolio from './pages/Portfolio';
+import Admin from './pages/Admin';
 
 function App() {
   return (
@@ -43,6 +44,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Portfolio />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requireAdmin={true}>
+              <Admin />
             </ProtectedRoute>
           }
         />

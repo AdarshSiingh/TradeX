@@ -25,10 +25,13 @@ function Navbar() {
         </h1>
 
         <div className="flex gap-6">
-          <Link to="/dashboard" className={linkClass('/dashboard')}>Dashboard</Link>
-          <Link to="/stocks" className={linkClass('/stocks')}>Stocks</Link>
-          <Link to="/portfolio" className={linkClass('/portfolio')}>Portfolio</Link>
-        </div>
+            <Link to="/dashboard" className={linkClass('/dashboard')}>Dashboard</Link>
+            <Link to="/stocks" className={linkClass('/stocks')}>Stocks</Link>
+            <Link to="/portfolio" className={linkClass('/portfolio')}>Portfolio</Link>
+            {user?.role === 'ADMIN' && (
+              <Link to="/admin" className={linkClass('/admin')}>Admin</Link>
+            )}
+          </div>
       </div>
 
       <div className="flex items-center gap-4">

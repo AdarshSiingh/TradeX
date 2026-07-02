@@ -17,6 +17,7 @@ const http = require('http');
 const { initSocket } = require('./sockets/priceSocket');
 const { connectToFinnhub, seedPricesFromDB } = require('./services/price.service');
 const analyticsRoutes = require('./routes/analytics.routes');
+const adminRoutes = require('./routes/admin.routes');
 
 
 app.use(helmet());
@@ -45,7 +46,7 @@ app.use('/api/stocks', stockRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/analytics', analyticsRoutes);
-
+app.use('/api/admin', adminRoutes);
 
 const errorHandler = require('./middleware/errorHandler');
 app.use(errorHandler);
