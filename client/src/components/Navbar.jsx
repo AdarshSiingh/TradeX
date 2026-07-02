@@ -28,6 +28,7 @@ function Navbar() {
             <Link to="/dashboard" className={linkClass('/dashboard')}>Dashboard</Link>
             <Link to="/stocks" className={linkClass('/stocks')}>Stocks</Link>
             <Link to="/portfolio" className={linkClass('/portfolio')}>Portfolio</Link>
+            <Link to="/transactions" className={linkClass('/transactions')}>Transactions</Link>
             {user?.role === 'ADMIN' && (
               <Link to="/admin" className={linkClass('/admin')}>Admin</Link>
             )}
