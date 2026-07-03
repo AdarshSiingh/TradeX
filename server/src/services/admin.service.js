@@ -12,7 +12,7 @@ const getAllUsers = async () => {
 
 
 const toggleUserStatus = async (userId) => {
-  // Flip is_active — if true, make false, and vice versa
+  
   const result = await pool.query(
     `UPDATE users 
      SET is_active = NOT is_active 

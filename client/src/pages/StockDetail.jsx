@@ -16,11 +16,10 @@ function StockDetail() {
   const [analytics, setAnalytics] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
 
-const SUPPORTED_TICKERS = ['AAPL', 'AMZN', 'GOOGL', 'GS', 'JPM', 'META', 'MSFT', 'NVDA', 'TSLA', 'V'];
+  const SUPPORTED_TICKERS = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN', 'META', 'NVDA', 'JPM', 'GS', 'V'];
 
   useEffect(() => {
     fetchStock();
-   
     if (SUPPORTED_TICKERS.includes(ticker.toUpperCase())) {
       fetchAnalytics();
     } else {
@@ -47,17 +46,9 @@ const SUPPORTED_TICKERS = ['AAPL', 'AMZN', 'GOOGL', 'GS', 'JPM', 'META', 'MSFT',
   const handleBuy = async () => {
     setLoading(true);
     setMessage('');
-
     try {
-      const res = await api.post('/orders/buy', {
-        ticker,
-        quantity: Number(quantity),
-      });
-
-      setMessage(
-        `Bought ${quantity} shares for $${res.data.totalCost.toFixed(2)}`
-      );
-
+      const res = await api.post('/orders/buy', { ticker, quantity: Number(quantity) });
+      setMessage(`Bought ${quantity} shares for $${res.data.totalCost.toFixed(2)}`);
       await checkAuth();
     } catch (err) {
       setMessage(err.response?.data?.error || 'Something went wrong');
@@ -69,17 +60,9 @@ const SUPPORTED_TICKERS = ['AAPL', 'AMZN', 'GOOGL', 'GS', 'JPM', 'META', 'MSFT',
   const handleSell = async () => {
     setLoading(true);
     setMessage('');
-
     try {
-      const res = await api.post('/orders/sell', {
-        ticker,
-        quantity: Number(quantity),
-      });
-
-      setMessage(
-        `Sold ${quantity} shares for $${res.data.totalValue.toFixed(2)}`
-      );
-
+      const res = await api.post('/orders/sell', { ticker, quantity: Number(quantity) });
+      setMessage(`Sold ${quantity} shares for $${res.data.totalValue.toFixed(2)}`);
       await checkAuth();
     } catch (err) {
       setMessage(err.response?.data?.error || 'Something went wrong');
@@ -98,20 +81,20 @@ const SUPPORTED_TICKERS = ['AAPL', 'AMZN', 'GOOGL', 'GS', 'JPM', 'META', 'MSFT',
 
   return (
     <Layout>
-      <div className="max-w-md">
 
-        <h2 className="text-2xl font-semibold">{stock.ticker}</h2>
-        <p className="text-gray-400 text-sm mb-1">{stock.name}</p>
-        <p className="text-3xl font-semibold mt-4 mb-6">
-          ${stock.current_price}
-        </p>
+      {/* ─── HEADER ──────────────────────────────── */}
+      <div className="mb-30">
+        <h2 className="text-4xl font-semibold">{stock.ticker}</h2>
+        <p className="text-gray-400 text-base mb-3">{stock.name}</p>
+        <p className="text-4xl font-semibold">${stock.current_price}</p>
+      </div>
 
-        <div className="border border-[#1a1a1a] rounded-lg p-5">
+      {/* ─── BUY/SELL + ANALYTICS SIDE BY SIDE ───── */}
+      <div className="grid grid-cols-2 gap-4 max-w-7xl mx-auto">
 
-          <label className="block text-sm text-gray-400 mb-1">
-            Quantity
-          </label>
+        <div className="border border-[#1a1a1a] rounded-lg p-8">
 
+          <label className="block text-sm text-gray-400 mb-1">Quantity</label>
           <input
             type="number"
             min="1"
@@ -132,7 +115,6 @@ const SUPPORTED_TICKERS = ['AAPL', 'AMZN', 'GOOGL', 'GS', 'JPM', 'META', 'MSFT',
             >
               Buy
             </button>
-
             <button
               onClick={handleSell}
               disabled={loading}
@@ -143,81 +125,49 @@ const SUPPORTED_TICKERS = ['AAPL', 'AMZN', 'GOOGL', 'GS', 'JPM', 'META', 'MSFT',
           </div>
 
           {message && (
-            <p className="text-sm text-gray-400 mt-4">
-              {message}
-            </p>
+            <p className="text-sm text-gray-400 mt-4">{message}</p>
           )}
 
         </div>
 
         {/* ─── ANALYTICS ───────────────────────────── */}
         {!analyticsLoading && analytics && (
-          <div className="border border-[#1a1a1a] rounded-lg p-5 mt-6">
+          <div className="border border-[#1a1a1a] rounded-lg p-5">
 
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-medium">
-                Technical Analysis
-              </h3>
-
-              <span
-                className={`text-xs px-2 py-1 rounded ${
-                  analytics.signal_current === 'buy'
-                    ? 'bg-green-500 text-black'
-                    : analytics.signal_current === 'sell'
-                    ? 'bg-red-500 text-black'
-                    : 'bg-[#2a2a2a] text-gray-300'
-                }`}
-              >
+              <h3 className="text-sm font-medium">Technical Analysis</h3>
+              <span className={`text-xs px-2 py-1 rounded ${
+                analytics.signal_current === 'buy' ? 'bg-green-500 text-black' :
+                analytics.signal_current === 'sell' ? 'bg-red-500 text-black' :
+                'bg-[#2a2a2a] text-gray-300'
+              }`}>
                 {analytics.signal_current.toUpperCase()}
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-
               <div>
                 <p className="text-xs text-gray-400 mb-1">RSI (14)</p>
                 <p className="text-sm">{analytics.rsi_current}</p>
               </div>
-
               <div>
-                <p className="text-xs text-gray-400 mb-1">
-                  Sharpe Ratio
-                </p>
+                <p className="text-xs text-gray-400 mb-1">Sharpe Ratio</p>
                 <p className="text-sm">{analytics.sharpe_ratio}</p>
               </div>
-
               <div>
-                <p className="text-xs text-gray-400 mb-1">
-                  Total Return
-                </p>
-
-                <p
-                  className={`text-sm ${
-                    analytics.total_return_pct >= 0
-                      ? 'text-green-500'
-                      : 'text-red-500'
-                  }`}
-                >
-                  {analytics.total_return_pct >= 0 ? '+' : ''}
-                  {analytics.total_return_pct}%
+                <p className="text-xs text-gray-400 mb-1">Total Return</p>
+                <p className={`text-sm ${analytics.total_return_pct >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {analytics.total_return_pct >= 0 ? '+' : ''}{analytics.total_return_pct}%
                 </p>
               </div>
-
               <div>
-                <p className="text-xs text-gray-400 mb-1">
-                  Max Drawdown
-                </p>
-
-                <p className="text-sm text-red-500">
-                  {analytics.max_drawdown_pct}%
-                </p>
+                <p className="text-xs text-gray-400 mb-1">Max Drawdown</p>
+                <p className="text-sm text-red-500">{analytics.max_drawdown_pct}%</p>
               </div>
-
             </div>
 
             <p className="text-xs text-gray-500 mt-4">
-              Based on data from {analytics.data_from} to{' '}
-              {analytics.data_to}
+              Based on data from {analytics.data_from} to {analytics.data_to}
             </p>
 
           </div>
