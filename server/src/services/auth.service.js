@@ -2,7 +2,15 @@ const bcrypt = require('bcrypt');
 const pool = require('../config/db');
 const { generateToken } = require('../utils/jwt');
 
+const isValidEmail = (email) => /\S+@\S+\.\S+/.test(email);
+
 const signup = async ({ name, email, password }) => {
+
+   if (!isValidEmail(email)) {
+    const error = new Error('Please enter a valid email address');
+    error.statusCode = 400;
+    throw error;
+  }
 
   const existingUser = await pool.query(
     'SELECT id FROM users WHERE email = $1',
@@ -32,6 +40,12 @@ const signup = async ({ name, email, password }) => {
 };
 
 const login = async ({ email, password }) => {
+
+  if (!isValidEmail(email)) {
+    const error = new Error('Please enter a valid email address');
+    error.statusCode = 400;
+    throw error;
+  }
 
   const result = await pool.query(
     'SELECT * FROM users WHERE email = $1',

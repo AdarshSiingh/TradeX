@@ -30,6 +30,20 @@ const toggleUserStatus = async (userId) => {
 
 
 const addStock = async ({ ticker, name, sector, price }) => {
+
+   const tickerRegex = /^[A-Za-z]{1,5}$/;
+  if (!tickerRegex.test(ticker)) {
+    const error = new Error('Ticker must be 1-5 letters only');
+    error.statusCode = 400;
+    throw error;
+  }
+
+  if (Number(price) <= 0) {
+    const error = new Error('Price must be a positive number');
+    error.statusCode = 400;
+    throw error;
+  }
+  
   const result = await pool.query(
     `INSERT INTO stocks (ticker, name, sector, current_price)
      VALUES ($1, $2, $3, $4)

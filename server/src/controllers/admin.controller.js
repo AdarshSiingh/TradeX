@@ -36,6 +36,9 @@ const createStock = async (req, res, next) => {
     const stock = await adminService.addStock({ ticker, name, sector, price });
     res.status(201).json({ success: true, stock });
   } catch (err) {
+    if (err.statusCode) {
+      return res.status(err.statusCode).json({ success: false, error: err.message });
+    }
     next(err);
   }
 };

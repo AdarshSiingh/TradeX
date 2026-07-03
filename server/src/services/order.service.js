@@ -1,6 +1,17 @@
 const pool = require('../config/db');
 
+const isValidQuantity = (quantity) => {
+  return Number.isInteger(quantity) && quantity > 0;
+};
+
 const buyStock = async ({ userId, ticker, quantity }) => {
+
+  if (!isValidQuantity(quantity)) {
+    const error = new Error('Quantity must be a positive whole number');
+    error.statusCode = 400;
+    throw error;
+  }
+
   const client = await pool.connect();
 
   try {
@@ -86,6 +97,13 @@ const buyStock = async ({ userId, ticker, quantity }) => {
 };
 
 const sellStock = async ({ userId, ticker, quantity }) => {
+
+  if (!isValidQuantity(quantity)) {
+    const error = new Error('Quantity must be a positive whole number');
+    error.statusCode = 400;
+    throw error;
+  }
+  
   const client = await pool.connect();
 
   try {
