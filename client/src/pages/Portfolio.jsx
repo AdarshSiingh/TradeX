@@ -38,6 +38,11 @@ function Portfolio() {
 
   const totalValue = liveHoldings.reduce((sum, item) => sum + item.currentValue, 0);
   const totalPL = liveHoldings.reduce((sum, item) => sum + item.profitLoss, 0);
+  const totalInvested = liveHoldings.reduce(
+    (sum, item) => sum + (parseFloat(item.avg_buy_price) * item.quantity),
+    0
+  );
+  const totalPLPercent = totalInvested > 0 ? (totalPL / totalInvested) * 100 : 0;
 
   if (loading) {
     return (
@@ -52,13 +57,23 @@ function Portfolio() {
 
       <div className="flex gap-8 mb-8">
         <div>
-          <p className="text-xs text-gray-400 mb-1">Total Value</p>
+          <p className="text-xs text-gray-400 mb-1">Total Invested</p>
+          <p className="text-2xl font-semibold">${totalInvested.toFixed(2)}</p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-400 mb-1">Current Value</p>
           <p className="text-2xl font-semibold">${totalValue.toFixed(2)}</p>
         </div>
         <div>
           <p className="text-xs text-gray-400 mb-1">Total P&L</p>
           <p className={`text-2xl font-semibold ${totalPL >= 0 ? 'text-green-500' : 'text-red-500'}`}>
             {totalPL >= 0 ? '+' : ''}${totalPL.toFixed(2)}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs text-gray-400 mb-1">Return</p>
+          <p className={`text-2xl font-semibold ${totalPLPercent >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+            {totalPLPercent >= 0 ? '+' : ''}{totalPLPercent.toFixed(2)}%
           </p>
         </div>
       </div>

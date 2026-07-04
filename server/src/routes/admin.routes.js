@@ -8,5 +8,7 @@ const authorize = require('../middleware/authorize');
 router.get('/users', authenticate, authorize('ADMIN'), adminController.getUsers);
 router.patch('/users/:userId/toggle-status', authenticate, authorize('ADMIN'), adminController.suspendUser);
 router.post('/stocks', authenticate, authorize('ADMIN'), adminController.createStock);
+router.get('/stats', authenticate, authorize('ADMIN'), adminController.getStats);
+router.delete('/stocks/:stockId', authenticate, authorize('ADMIN'), adminController.deleteStock);
 
 module.exports = router;

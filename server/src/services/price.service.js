@@ -4,24 +4,32 @@ const { getIO } = require('../sockets/priceSocket');
 require('dotenv').config();
 const pool = require('../config/db');
 
-const TICKERS = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN', 'META', 'NVDA', 'JPM', 'GS', 'V'];
 
-const connectToFinnhub = () => {
+let activeFinnhubSocket = null;
+
+const connectToFinnhub = async () => {
   const finnhubSocket = new WebSocket(
     `wss://ws.finnhub.io?token=${process.env.FINNHUB_API_KEY}`
   );
 
-  finnhubSocket.on('open', () => {
+  finnhubSocket.on('open', async () => {
     console.log('✅ Connected to Finnhub WebSocket');
+    activeFinnhubSocket = finnhubSocket;
 
-    
-    TICKERS.forEach((ticker) => {
+  
+    const result = await pool.query('SELECT ticker FROM stocks');
+    const tickers = result.rows.map((row) => row.ticker);
+
+    tickers.forEach((ticker) => {
       finnhubSocket.send(JSON.stringify({ type: 'subscribe', symbol: ticker }));
     });
+
+    console.log(`✅ Subscribed to ${tickers.length} tickers:`, tickers.join(', '));
   });
 
   finnhubSocket.on('message', async (data) => {
     const parsed = JSON.parse(data);
+    
 
   
     if (parsed.type === 'trade' && parsed.data) {
@@ -50,7 +58,7 @@ const connectToFinnhub = () => {
 
   finnhubSocket.on('close', () => {
     console.log('⚠️ Finnhub WebSocket closed, reconnecting in 5s...');
-    setTimeout(connectToFinnhub, 5000); 
+    setTimeout(connectToFinnhub, 5000);
   });
 };
 
@@ -64,4 +72,14 @@ const seedPricesFromDB = async () => {
   console.log('✅ Redis seeded with existing stock prices');
 };
 
-module.exports = { connectToFinnhub, seedPricesFromDB };
+
+const subscribeToTicker = (ticker) => {
+  if (activeFinnhubSocket && activeFinnhubSocket.readyState === WebSocket.OPEN) {
+    activeFinnhubSocket.send(JSON.stringify({ type: 'subscribe', symbol: ticker }));
+    console.log(`✅ Subscribed to new ticker: ${ticker}`);
+  } else {
+    console.log(`⚠️ Finnhub socket not ready, could not subscribe to ${ticker} yet`);
+  }
+};
+
+module.exports = { connectToFinnhub, seedPricesFromDB, subscribeToTicker };

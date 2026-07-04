@@ -12,6 +12,7 @@ function StockDetail() {
   const [quantity, setQuantity] = useState(1);
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
 
   const [analytics, setAnalytics] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
@@ -43,7 +44,7 @@ function StockDetail() {
     }
   };
 
-  const handleBuy = async () => {
+  const confirmBuy = async () => {
     setLoading(true);
     setMessage('');
     try {
@@ -54,10 +55,11 @@ function StockDetail() {
       setMessage(err.response?.data?.error || 'Something went wrong');
     } finally {
       setLoading(false);
+      setPendingAction(null);
     }
   };
 
-  const handleSell = async () => {
+  const confirmSell = async () => {
     setLoading(true);
     setMessage('');
     try {
@@ -68,6 +70,7 @@ function StockDetail() {
       setMessage(err.response?.data?.error || 'Something went wrong');
     } finally {
       setLoading(false);
+      setPendingAction(null);
     }
   };
 
@@ -82,14 +85,13 @@ function StockDetail() {
   return (
     <Layout>
 
-      {/* ─── HEADER ──────────────────────────────── */}
+      
       <div className="mb-30">
         <h2 className="text-4xl font-semibold">{stock.ticker}</h2>
         <p className="text-gray-400 text-base mb-3">{stock.name}</p>
         <p className="text-4xl font-semibold">${stock.current_price}</p>
       </div>
 
-      {/* ─── BUY/SELL + ANALYTICS SIDE BY SIDE ───── */}
       <div className="grid grid-cols-2 gap-4 max-w-7xl mx-auto">
 
         <div className="border border-[#1a1a1a] rounded-lg p-8">
@@ -109,14 +111,14 @@ function StockDetail() {
 
           <div className="flex gap-3">
             <button
-              onClick={handleBuy}
+              onClick={() => setPendingAction('buy')}
               disabled={loading}
               className="flex-1 bg-green-500 text-black font-medium rounded py-2 text-sm disabled:opacity-50"
             >
               Buy
             </button>
             <button
-              onClick={handleSell}
+              onClick={() => setPendingAction('sell')}
               disabled={loading}
               className="flex-1 border border-[#2a2a2a] text-white rounded py-2 text-sm disabled:opacity-50 hover:border-gray-500"
             >
@@ -130,7 +132,7 @@ function StockDetail() {
 
         </div>
 
-        {/* ─── ANALYTICS ───────────────────────────── */}
+        
         {!analyticsLoading && analytics && (
           <div className="border border-[#1a1a1a] rounded-lg p-5">
 
@@ -174,6 +176,55 @@ function StockDetail() {
         )}
 
       </div>
+      {pendingAction && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg p-6 w-full max-w-sm mx-4">
+
+            <h3 className="text-lg font-medium mb-4">
+              Confirm {pendingAction === 'buy' ? 'Purchase' : 'Sale'}
+            </h3>
+
+            <div className="space-y-2 mb-6">
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Stock</span>
+                <span>{stock.ticker}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Quantity</span>
+                <span>{quantity} shares</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-gray-400">Price per share</span>
+                <span>${stock.current_price}</span>
+              </div>
+              <div className="flex justify-between text-sm font-medium pt-2 border-t border-[#2a2a2a]">
+                <span>Estimated Total</span>
+                <span>${(stock.current_price * quantity).toFixed(2)}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPendingAction(null)}
+                disabled={loading}
+                className="flex-1 border border-[#2a2a2a] text-white rounded py-2 text-sm hover:border-gray-500 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={pendingAction === 'buy' ? confirmBuy : confirmSell}
+                disabled={loading}
+                className={`flex-1 font-medium rounded py-2 text-sm disabled:opacity-50 ${
+                  pendingAction === 'buy' ? 'bg-green-500 text-black' : 'bg-red-500 text-white'
+                }`}
+              >
+                {loading ? 'Processing...' : 'Confirm'}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

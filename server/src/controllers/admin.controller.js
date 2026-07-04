@@ -9,6 +9,15 @@ const getUsers = async (req, res, next) => {
   }
 };
 
+const getStats = async (req, res, next) => {
+  try {
+    const stats = await adminService.getStats();
+    res.status(200).json({ success: true, stats });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const suspendUser = async (req, res, next) => {
   try {
     const { userId } = req.params;
@@ -43,4 +52,17 @@ const createStock = async (req, res, next) => {
   }
 };
 
-module.exports = { getUsers, suspendUser, createStock };
+const deleteStock = async (req, res, next) => {
+  try {
+    const { stockId } = req.params;
+    const stock = await adminService.removeStock(stockId);
+    res.status(200).json({ success: true, stock });
+  } catch (err) {
+    if (err.statusCode) {
+      return res.status(err.statusCode).json({ success: false, error: err.message });
+    }
+    next(err);
+  }
+};
+
+module.exports = { getUsers, suspendUser, createStock, getStats, deleteStock };

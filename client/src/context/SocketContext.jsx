@@ -9,7 +9,7 @@ export const SocketProvider = ({ children }) => {
   const [prices, setPrices] = useState({});
 
   useEffect(() => {
-    const socket = io('http://localhost:8000');
+    const socket = io(import.meta.env.VITE_SOCKET_URL);
 
     socket.on('priceUpdate', ({ ticker, price }) => {
       setPrices((prev) => ({ ...prev, [ticker]: price }));

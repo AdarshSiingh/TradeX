@@ -1,5 +1,6 @@
 const { Server } = require('socket.io');
 const redis = require('../config/redis');
+const pool = require('../config/db');
 
 
 let io; 
@@ -16,7 +17,9 @@ const initSocket = (server) => {
   io.on('connection', async (socket) => {
     console.log('Client connected:', socket.id);
 
-    const tickers = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN', 'META', 'NVDA', 'JPM', 'GS', 'V'];
+    const result = await pool.query('SELECT ticker FROM stocks');
+    const tickers = result.rows.map((row) => row.ticker);
+    
     for (const ticker of tickers) {
       const price = await redis.get(`price:${ticker}`);
       if (price) {
