@@ -28,15 +28,14 @@ Every user starts with $100,000 in virtual cash and can buy/sell stocks at live 
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-**Frontend:** React (Vite), Tailwind CSS, React Router, Recharts, Socket.io-client, Axios
-
-**Backend:** Node.js, Express, PostgreSQL (raw SQL via `pg`), Redis (Upstash), Socket.io, JWT, Passport.js (Google OAuth2), bcrypt
-
-**Analytics:** Python, pandas, `ta`, SQLAlchemy
-
-**Infrastructure:** Neon (PostgreSQL), Upstash (Redis), Finnhub (market data), Render (backend), Vercel (frontend)
+| Category | Technologies |
+|----------|--------------|
+| **Frontend** | React (Vite), Tailwind CSS, React Router, Recharts, Axios, Socket.io Client |
+| **Backend** | Node.js, Express.js, PostgreSQL (`pg`), Redis (Upstash), Socket.io, JWT, Passport.js (Google OAuth 2.0), bcrypt |
+| **Analytics** | Python, pandas, SQLAlchemy, TA-Lib (`ta`) |
+| **Infrastructure** | Vercel, Render, Neon (PostgreSQL), Upstash (Redis), Finnhub API |
 
 ---
 
