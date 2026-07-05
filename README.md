@@ -2,7 +2,7 @@
 
 A real-time paper trading platform where users can practice trading stocks with live market data, without risking real money.
 
-**Live demo:** https://trade-x-taupe.vercel.app
+**Live Demo:** https://trade-x-taupe.vercel.app<br>
 **API:** https://tradex-6t26.onrender.com
 
 ---
