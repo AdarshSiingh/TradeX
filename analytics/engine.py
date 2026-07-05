@@ -9,7 +9,7 @@ from sqlalchemy import create_engine
 from dotenv import dotenv_values
 
 ENV_PATH = Path(__file__).resolve().parent / ".env"
-DATABASE_URL = os.environ.get("DATABASE_URL") or dotenv_values(ENV_PATH).get("DATABASE_URL")
+DATABASE_URL = os.environ.get("ANALYTICS_DATABASE_URL") or dotenv_values(ENV_PATH).get("DATABASE_URL")
 
 if not DATABASE_URL:
     raise RuntimeError("DATABASE_URL is not configured for analytics")
