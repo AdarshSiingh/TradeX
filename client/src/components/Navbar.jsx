@@ -7,8 +7,8 @@ function Navbar() {
   const location = useLocation();
 
   const handleLogout = async () => {
-    await logout();
-    navigate('/');
+  navigate('/');
+  await logout();
   };
 
   const isActive = (path) => location.pathname === path;
