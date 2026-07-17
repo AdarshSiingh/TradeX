@@ -14,34 +14,13 @@ function StockDetail() {
   const [loading, setLoading] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
 
-  const [analytics, setAnalytics] = useState(null);
-  const [analyticsLoading, setAnalyticsLoading] = useState(true);
-
-  const SUPPORTED_TICKERS = ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN', 'META', 'NVDA', 'JPM', 'GS', 'V'];
-
   useEffect(() => {
     fetchStock();
-    if (SUPPORTED_TICKERS.includes(ticker.toUpperCase())) {
-      fetchAnalytics();
-    } else {
-      setAnalyticsLoading(false);
-    }
   }, [ticker]);
 
   const fetchStock = async () => {
     const res = await api.get(`/stocks/${ticker}`);
     setStock(res.data.stock);
-  };
-
-  const fetchAnalytics = async () => {
-    try {
-      const res = await api.get(`/analytics/${ticker}`);
-      setAnalytics(res.data.analytics);
-    } catch (err) {
-      console.error('Analytics not available:', err);
-    } finally {
-      setAnalyticsLoading(false);
-    }
   };
 
   const confirmBuy = async () => {
@@ -85,14 +64,13 @@ function StockDetail() {
   return (
     <Layout>
 
-      
-      <div className="mb-30">
+      <div className="mb-16">
         <h2 className="text-4xl font-semibold">{stock.ticker}</h2>
         <p className="text-gray-400 text-base mb-3">{stock.name}</p>
         <p className="text-4xl font-semibold">${stock.current_price}</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 max-w-7xl mx-auto">
+      <div className="max-w-md">
 
         <div className="border border-[#1a1a1a] rounded-lg p-8">
 
@@ -132,50 +110,8 @@ function StockDetail() {
 
         </div>
 
-        
-        {!analyticsLoading && analytics && (
-          <div className="border border-[#1a1a1a] rounded-lg p-5">
-
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-sm font-medium">Technical Analysis</h3>
-              <span className={`text-xs px-2 py-1 rounded ${
-                analytics.signal_current === 'buy' ? 'bg-green-500 text-black' :
-                analytics.signal_current === 'sell' ? 'bg-red-500 text-black' :
-                'bg-[#2a2a2a] text-gray-300'
-              }`}>
-                {analytics.signal_current.toUpperCase()}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-gray-400 mb-1">RSI (14)</p>
-                <p className="text-sm">{analytics.rsi_current}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Sharpe Ratio</p>
-                <p className="text-sm">{analytics.sharpe_ratio}</p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Total Return</p>
-                <p className={`text-sm ${analytics.total_return_pct >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                  {analytics.total_return_pct >= 0 ? '+' : ''}{analytics.total_return_pct}%
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-400 mb-1">Max Drawdown</p>
-                <p className="text-sm text-red-500">{analytics.max_drawdown_pct}%</p>
-              </div>
-            </div>
-
-            <p className="text-xs text-gray-500 mt-4">
-              Based on data from {analytics.data_from} to {analytics.data_to}
-            </p>
-
-          </div>
-        )}
-
       </div>
+
       {pendingAction && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
           <div className="bg-[#0f0f0f] border border-[#2a2a2a] rounded-lg p-6 w-full max-w-sm mx-4">

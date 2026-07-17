@@ -107,31 +107,6 @@ Google redirects here after login. Sets JWT cookie, redirects to frontend dashbo
 
 ---
 
-## Analytics
-
-### `GET /analytics/:ticker`
-🔒 Requires auth. Runs the Python analytics engine (RSI, MACD, Sharpe ratio, signal) for a given ticker via `child_process`.
-
-**Supported tickers:** AAPL, TSLA, GOOGL, MSFT, AMZN, META, NVDA, JPM, GS, V
-
-**Response `200`:**
-```json
-{
-  "success": true,
-  "analytics": {
-    "ticker": "AAPL",
-    "total_return_pct": 18.89,
-    "sharpe_ratio": 1.64,
-    "max_drawdown_pct": -12.71,
-    "rsi_current": 51.2,
-    "signal_current": "hold",
-    ...
-  }
-}
-```
-
----
-
 ## Admin
 
 All admin routes require both authentication AND the `ADMIN` role (`authorize('ADMIN')` middleware). Regular traders receive a `403 Forbidden`.

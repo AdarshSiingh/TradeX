@@ -11,7 +11,7 @@ A real-time paper trading platform where users can practice trading stocks with 
 
 TradeX is a full-stack trading simulator built to demonstrate production-style engineering patterns — authentication, real-time data, atomic financial transactions, and role-based access control — using a stack that mirrors what fintech companies actually build with.
 
-Every user starts with $100,000 in virtual cash and can buy/sell stocks at live market prices, track their portfolio's real-time profit and loss, and view technical analysis (RSI, MACD, Sharpe ratio) powered by a separate Python analytics engine.
+Every user starts with $100,000 in virtual cash and can buy/sell stocks at live market prices, track their portfolio's real-time profit and loss.
 
 ---
 
@@ -22,7 +22,6 @@ Every user starts with $100,000 in virtual cash and can buy/sell stocks at live 
 - **Real-time prices** — Live stock prices via Finnhub, cached in Redis, broadcast to all connected clients via Socket.io
 - **Trading engine** — Buy/sell orders processed inside atomic PostgreSQL transactions, with weighted average cost-basis tracking
 - **Portfolio tracking** — Live P&L, total invested, percentage return, and an allocation breakdown chart
-- **Technical analysis** — RSI, MACD, Sharpe ratio, and max drawdown computed by a Python engine (pandas + `ta`), bridged into the Node.js API via `child_process`
 - **Admin panel** — Add/remove stocks (with live price feed auto-subscription), manage users, view platform-wide stats
 - **Transaction history** — Full record of every trade, most recent first
 
@@ -34,8 +33,6 @@ Every user starts with $100,000 in virtual cash and can buy/sell stocks at live 
 
 **Backend:** Node.js, Express, PostgreSQL (raw SQL via `pg`), Redis (Upstash), Socket.io, JWT, Passport.js (Google OAuth2), bcrypt
 
-**Analytics:** Python, pandas, `ta`, SQLAlchemy
-
 **Infrastructure:** Neon (PostgreSQL), Upstash (Redis), Finnhub (market data), Render (backend), Vercel (frontend)
 
 ---
@@ -44,22 +41,10 @@ Every user starts with $100,000 in virtual cash and can buy/sell stocks at live 
 
 ```mermaid
 flowchart LR
-    A["React Frontend<br/>(Vercel)"]
-    B["Node.js + Express<br/>(Render)"]
-    C["Python Analytics Engine"]
-    D["PostgreSQL (Neon)<br/>App Data"]
-    E["PostgreSQL (Neon)<br/>Historical OHLCV"]
-    F["Redis (Upstash)<br/>Price Cache"]
-    G["Finnhub API<br/>Market Data"]
-
-    A <-->|HTTPS / Socket.io| B
-    B -->|child_process| C
-
-    B <--> D
-    C <--> E
-
-    G --> F
-    F --> B
+    A[React Frontend<br/>Vercel] <-->|HTTPS / Socket.io| B[Node.js + Express<br/>Render]
+    B <--> D[(PostgreSQL<br/>Neon)]
+    B <--> F[(Redis<br/>Upstash)]
+    G[Finnhub API<br/>Market Data] --> F
 ```
 
 The Node.js server maintains a single upstream connection to Finnhub and re-broadcasts price updates to all connected frontend clients via Socket.io — regardless of user count, there's only ever one outgoing connection to the external market data provider.
@@ -72,7 +57,6 @@ The Node.js server maintains a single upstream connection to Finnhub and re-broa
 stock-trading-platform/
 ├── client/                 # React frontend (Vite)
 ├── server/                 # Node.js + Express backend
-├── analytics/              # Python analytics engine
 ├── docs/
 │   ├── API.md              # REST API documentation
 │   └── SCHEMA.md           # Database schema documentation
@@ -82,7 +66,7 @@ stock-trading-platform/
 
 ## Running Locally
 
-**Prerequisites:** Node.js 18+, Python 3.9+, a PostgreSQL database (e.g. Neon), a Redis instance (e.g. Upstash), a Finnhub API key, Google OAuth credentials.
+**Prerequisites:** Node.js 18+, a PostgreSQL database (e.g. Neon), a Redis instance (e.g. Upstash), a Finnhub API key, Google OAuth credentials.
 
 ### 1. Clone and install
 
@@ -101,7 +85,6 @@ Copy the example files and fill in your own credentials:
 
 ```bash
 cp server/.env.example server/.env
-cp analytics/.env.example analytics/.env
 cp client/.env.example client/.env
 ```
 
